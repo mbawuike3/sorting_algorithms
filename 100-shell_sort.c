@@ -1,38 +1,46 @@
 #include "sort.h"
+
 /**
- * shell_sort -  sorts an array of integers in
- * ascending order using the Shell sort algorithm,
- * using the Knuth sequence
- * @array: pointer to array
- * @size: size of the array
- **/
+ * swap_ints - Swap two integers in an array.
+ * @a: The first integer to swap.
+ * @b: The second integer to swap.
+ */
+void swap_ints(int *a, int *b)
+{
+	int tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+/**
+ * shell_sort - Sort an array of integers in ascending
+ *              order using the shell sort algorithm.
+ * @array: An array of integers.
+ * @size: The size of the array.
+ *
+ * Description: Uses the Knuth interval sequence.
+ */
 void shell_sort(int *array, size_t size)
 {
-	size_t kunth[1000], k = 0, j = 0, i;
-	int n, j2;
+	size_t gap, i, j;
 
-	if (!array)
+	if (array == NULL || size < 2)
 		return;
-	while (j * 3 + 1 < size)
+
+	for (gap = 1; gap < (size / 3);)
+		gap = gap * 3 + 1;
+
+	for (; gap >= 1; gap /= 3)
 	{
-		kunth[k] = j * 3 + 1;
-		j = kunth[k++];
-	}
-	for (i = 0; i < k; i++)
-	{
-		for (j = 0; j < size; j++)
+		for (i = gap; i < size; i++)
 		{
-			if ((j + kunth[k - i - 1]) > size - 1)
-				break;
-			j2 = j;
-			while (array[j2] > array[j2 + kunth[k - i - 1]])
+			j = i;
+			while (j >= gap && array[j - gap] > array[j])
 			{
-				n = array[j2];
-				array[j2] =  array[j2 + kunth[k - i - 1]];
-				array[j2 + kunth[k - i - 1]] = n;
-				j2 = j2 - kunth[k - i - 1];
-				if (j2 < 0)
-					break;
+				swap_ints(array + j, array + (j - gap));
+				j -= gap;
 			}
 		}
 		print_array(array, size);
